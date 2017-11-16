@@ -18,11 +18,14 @@ int main(int argc, char *argv[]) {
     assert(argc == 2);
 
 
-    printf("Init SDL2...\n");
     // Initialisation de la SDL
+    printf("Init SDL2...\n");
     res = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_EVENTS);
+    if( res == -1) {
+    	fprintf(stderr, "SDL Init error : %s\n", SDL_GetError());
+    	exit(EXIT_FAILURE);
+    }
     atexit(SDL_Quit);
-    assert(res == 0);
     
     printf("Init SDL2 ok\n");
     // start the two stream readers
