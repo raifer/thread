@@ -27,7 +27,6 @@ int main(int argc, char *argv[]) {
     }
     atexit(SDL_Quit);
     
-    printf("Init SDL2 ok\n");
     // start the two stream readers
 pthread_t t_theoraStreamReader;
 if(pthread_create(&t_theoraStreamReader, NULL, theoraStreamReader, argv[1]) == -1) {
@@ -35,10 +34,14 @@ if(pthread_create(&t_theoraStreamReader, NULL, theoraStreamReader, argv[1]) == -
 	return EXIT_FAILURE;
 }
 
-//pthread_t t_vorbisStreamReader;
+pthread_t t_vorbisStreamReader;
+if(pthread_create(&t_vorbisStreamReader, NULL, vorbisStreamReader, argv[1]) == -1) {
+	perror("pthread_create");
+	return EXIT_FAILURE;
+}
     
     // wait audio thread
-
+pthread_join (t_theoraStreamReader, NULL);
     // 1 seconde de garde pour le son,
     sleep(1);
 
