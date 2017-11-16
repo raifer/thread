@@ -115,9 +115,11 @@ La structure, cotévidéo, est maniée par deux threads.
 Il faudra donc la protéger des accès concurrents.
 Par simplification, la même fonction servant pour le décodeur vorbis, vous pouvez protéger les deux accès.
 Le code est à ajouter à la fin de la fonction getStreamState() du fichier stream common.c et au milieu de la fonction draw2SDL() du fichier ensitheora.c.
-3.3 Attente et Producteur-consommateur
+
+## 3.3 Attente et Producteur-consommateur
 Il y a deux groupes de synchronisations qui correspondent à deux moments.
-3.3.1 Affichage de la fenêtre vidéo
+
+### 3.3.1 Affichage de la fenêtre vidéo
 C’est le thread décodant le flux qui connaît la taille de l’image à afficher,
 il doit donc transmettre cette taille et attendre la création de la fenêtre avant
 de poursuivre.
@@ -125,12 +127,14 @@ Vous coderez les synchronisations des fonctions suivantes :
 void envoiTailleFenetre(th_ycbcr_buffer buffer) et void attendreFenetreTexture()
 (cotédécodeur), void attendreTailleFenetre() et void signalerFenetreEtTexturePrete()
 (cotéafficheur).
-3.3.2 Producteur-consommateur de textures
+
+### 3.3.2 Producteur-consommateur de textures
 Le fait d’avoir un seul consommateur et un seul producteur rend le code plus simple qu’un producteur-consommateur complet.
 Vous devez uniquement maintenir le nombre de textures déposées et pas encore affichées.
-La
-gestion du tampon de textures et des indices tex_ilect, tex_iaff) est déjàcodée par le squelette.
+La gestion du tampon de textures et des indices tex_ilect, tex_iaff) est déjàcodée par le squelette.
 Le nombre maximal de textures stockable est NBTEX.
 Vous coderez les synchronisations des fonctions suivantes :
-— void debutConsommerTexture(), — void finConsommerTexture(), — void debutDeposerTexture(), — void finDeposerTexture().
-5
+— void debutConsommerTexture(), 
+— void finConsommerTexture()
+— void debutDeposerTexture()
+— void finDeposerTexture()
