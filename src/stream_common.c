@@ -1,5 +1,6 @@
 #include <time.h>
 #include <assert.h>
+#include <pthread.h>
 #include "ensivorbis.h"
 #include "ensitheora.h"
 #include "stream_common.h"
@@ -140,8 +141,8 @@ int decodeAllHeaders(int respac, struct streamstate *s, enum streamtype type) {
 
 	    if (type == TYPE_THEORA) {
 		// lancement du thread gérant l'affichage (draw2SDL)
-	        // inserer votre code ici !!
-
+	    	pthread_t t_draw;
+	    	res = pthread_create(&t_draw, NULL, draw2SDL, &s->serial);
 		assert(res == 0);		     
 	    }
 	}
