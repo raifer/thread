@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
+#include <pthread.h>
 #include <assert.h>
 #include <SDL2/SDL.h>
 
@@ -17,13 +18,21 @@ int main(int argc, char *argv[]) {
     assert(argc == 2);
 
 
+    printf("Init SDL2...\n");
     // Initialisation de la SDL
     res = SDL_Init(SDL_INIT_VIDEO|SDL_INIT_AUDIO|SDL_INIT_EVENTS);
     atexit(SDL_Quit);
     assert(res == 0);
     
+    printf("Init SDL2 ok\n");
     // start the two stream readers
+pthread_t t_theoraStreamReader;
+if(pthread_create(&t_theoraStreamReader, NULL, theoraStreamReader, argv[1]) == -1) {
+	perror("pthread_create");
+	return EXIT_FAILURE;
+}
 
+//pthread_t t_vorbisStreamReader;
     
     // wait audio thread
 
