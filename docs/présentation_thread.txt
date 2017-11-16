@@ -1,0 +1,207 @@
+POSIX threads (programmation concurrente)
+Oum-el-kheir AxTOUF François BROQUEDIS Renaud
+LACHAIZE Grégory MOUNIÉFrédéric KTROT Vivien
+Quéma
+d’après les œuvres de Jacques Mossière et Yves Denneulin
+20 octobre 2016
+Introduction Pthread
+Moniteur
+Exclusion mutuelle Conditions
+Sémaphore Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Les fils d’exécution : “threads” ou processus légers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Les threads
+•	La création d’un processus est une opération “lourde”
+•	Les processus sont isolés dans des espaces mémoire différents
+•	La communication est une opération lourde (fichier, pipe, socket, etc.)
+•	D’oùl’idée de faire coexister plusieurs activités parallèles à l’intérieur d’un même espace mémoire
+•	Ces activités sont appelées des “ threads ” (fils d’exécutions, processus légers)
+•	Ils partagent l’espace mémoire de leur processus
+•	Ils ont en propre une pile et les registres
+•	Ils peuvent se communiquer des informations par l’intermédiaire de la mémoire commune
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Support dans les OS et les langages
+Les systèmes modernes ont un support des threads : Windows, UNIXes : Linux, Freebsd, Netbsd...
+Les langages ont aussi un support des threads :
+•	Java : Interface ancienne limitée; remonte l’interface POSIX et bien plus dans les bibliothèques (Java > 1.4 ) ;
+•	Ada (select : opérateur de synchronisation entre les Tasks Ada par rendez-vous)
+•	C-11 : partiellement disponible dans votre gcc (>= 4.7
+:
+-std=gnu11 ) préféré. Plus simple. Fonctions atomiques.
+•	C++-11 : idem C-11 mais avec des fonctionnalités supplémentaires aussi avancées que Java,
+•	mais aussi en Scala, Go, Rust, D, Pascal, Python, C#, etc. Nous verrons l’API UNIX (Posix thread).
+L’interface UNIX : les threads POSIX (Pthreads)
+Fonctions
+•	création/destruction de threads
+•	synchronisation : moniteur (conditions, mutex) et sémaphore
+•	ordonnancement, priorités
+•	signaux
+Attributs d’un thread POSIX
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Création d’un thread POSIX
+•	Caractérisation de son état	pthread create
+•	Pile	Crée un thread avec les attributs attr, exécute la fonction start routine avec arg comme argument tid : identificateur du thread créé(équivalent au pid UNIX) join et synchronisation
+•	Données privées	int
+	pthread create ( pthread t *tid , pthread attr *attr ,
+	void* (*start routine )( void *) , void *arg ) ;
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Exemple simple (2)
+Exemple simple (1)
+#include <pthread.h>
+void * ALL IS OK = (void *)123456789L ; char *mess[2] = { ”boys” , ” g i r l s ” };
+void *
+writer(void * arg) { int i , j ;
+for ( i =0; i <10; i++) {
+p r i n t f (”Hi %s ! ( I’m %lx )\n” , arg , pthread self ( ) ) ; j = 800000; while ( j ^^);
+}
+return ALL IS OK ;
+}
+int
+main ( void )
+{
+void * status ;
+pthread t writer1 pid , writer2 pid ;
+pthread create (& writer1 pid , NULL, writer , ( void *) mess [ 1 ] ) ;
+pthread create(&writer2 pid , NULL, writer , (void *)mess[0]);
+Exemple simple (3)
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Exclusion mutuelle
+}
+pthread join ( writer1 pid , &status ) ; i f ( status == ALL IS OK )
+p r i n t f (”Thread %lx completed ok .\ n” , w r i t e r 1 pid ) ;
+pthread join (writer2 pid , &status ) ; i f ( status == ALL IS OK )
+p r i n t f (”Thread %lx completed ok .\ n” , writer2 pid ) ;
+return 0;
+Exemple
+pthread mutex t mon mutex;
+pthread mutex init(&mon mutex,NULL);
+. . .
+pthread mutex lock(&mon mutex);
+<section critique>
+pthread mutex unlock(&mon mutex);
+. . .
+// f i n du programme
+pthread mutex destroy(&mon mutex);
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Les conditions
+Exercice
+Exercice
+Lancer deux threads (create, join), puis, au choix :
+•	faire la somme des éléments d’un tableau
+•	faire l’addition de deux matrices
+•	faire v++ sur la même variable globale (+ mutex)
+pthread cond t type condition
+pthread cond init initialisation d’une condition
+pthread cond wait mise en attente sur une condition et sortie de mutex, reprise du mutex au réveil
+pthread cond signal réveil sur une condition
+Le signal est différent de celui de Hoare !
+Attention le thread signaléne prend pas immédiatement le contrôle.
+Réalisation d’un moniteur
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Réalisation d’un moniteur
+•	Un mutex pour assurer l’exclusion mutuelle
+•	Chaque procédure du moniteur est parenthésée par pthread mutex lock() et pthread mutex unlock()
+•	Chaque variable de condition est une variable pthread cond t
+•	Le thread réveillén’est pas activéimmédiatement par pthread cond signal()
+•	Généralement il faut réévaluer la condition de blocage (en pratique, emploi d’un while plutôt qu’un if
+•	Le réveil en cascade ne fonctionne pas toujours! En général, il faut mettre pthread cond signal juste avant de terminer la procédure (juste avant unlock)
+•	Un mutex pour assurer l’exclusion mutuelle
+•	Chaque procédure du moniteur est parenthésée par pthread mutex lock() et pthread mutex unlock()
+•	Chaque variable de condition est une variable pthread cond t
+•	Le thread réveillén’est pas activéimmédiatement par pthread cond signal()
+•	Généralement il faut réévaluer la condition de blocage (en pratique, emploi d’un while plutôt qu’un if
+•	Le réveil en cascade ne fonctionne pas toujours! En général, il faut mettre pthread cond signal juste avant de terminer la procédure (juste avant unlock)
+Généralités et points particuliers
+Ces conseils sont des généralités mais parfois ils ne correspondent pas à la synchronisation voulue!
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Un exemple : l’allocateur(1/2)
+Un exemple : l’allocateur (2/2)
+int nlibre = 123;
+pthread cond t c ; pthread mutex t mutex; pthread cond init (&c,NULL) ;
+void allouer (int n) {
+pthread mutex lock(&mutex);
+while (n > nlibre) {
+pthread cond wait (&c , &mutex) ;
+}
+nlibre = nlibre ^ n ;
+pthread mutex unlock (&mutex) ;
+}
+void liberer (int m) {
+pthread mutex lock (&mutex) ; nlibre = nlibre + m ;
+pthread cond broadcast (&c ) ; pthread mutex unlock (&mutex) ;
+}
+Attention au réveil en cascade!(1/2)
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Attention au réveil en cascade! (2/2)
+void liberer (int m)
+{ . . .
+pthread cond signal (&c ) ; // ! ! ! ! ! !
+}
+int nlibre = 123;
+pthread cond t c ; pthread mutex t mutex; pthread cond init (&c,NULL) ;
+void allouer (int n) {
+pthread mutex lock(&mutex);
+while (n > nlibre) {
+pthread cond wait (&c , &mutex) ;
+pthread cond signal (&c ) ; // mouvement
+}	// perpetuel
+nlibre = nlibre ^ n ;
+pthread mutex unlock (&mutex) ;
+}
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Nommés ou anonymes
+Les sémaphores POSIX peuvent être nommés ou non nommés. Sémaphores anonymes
+Un sémaphore non nommén’est accessible que par sa position en mémoire. Il permet de synchroniser des threads, qui partagent par définition le même espace de mémoire; et des processus ayant mis en place des segments de mémoire partagée.
+Un sémaphore nomméest utilisable pour synchroniser des processus connaissant son nom.
+•	persistant, indépendamment des processus
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Sémaphore
+sem t mon sem ;
+sem init(&mon sem, NULL, 3); // anonyme, pour thread
+. . .	//i n i t i a l i s é a 3
+sem wait(&mon sem ) ; // P() sem post(&mon sem ) ; // V()
+. . .
+sem destroy(&mon sem ) ;
+Autres détails et opérations utiles
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Compilation
+sleep(t) bloque le thread courant pendant t secondes pthread cancel(threadid) détruit le thread threadid
+pthread cond broadcast(&cond) réveille l’ensemble des threads en attente de la condition
+Tests pthread mutex trylock(), sem trywait() Timer pthread cond timedwait(), sem timedwait()
+Les man sont vos amis
+Par exemple, sur l’initialisation à la création des variables. Entêtes des fonctions dans #include <pthread.h>
+Le code des fonctions est dans la bibliothèque libpthread (àl’édition de lien : -lpthread, comme le -lm pour la bibliothèque mathématique libm.
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Gdb et les threads
+Valgrind et les threads
+Il est possible d’explorer l’état d’un processus composéde plusieurs threads
+info threads donne la liste des threads et leur numéros,
+thread 4 déplace le contexte du débogueur vers le thread numéro 4,
+where, up, down, print, ... fonctionne pour le thread courant. En plus de vérifier vos accès mémoire, valgrind est aussi capable de vérifier vos synchronisations. Il y a même deux détecteurs différents.
+–tool=helgrind : détecteur de condition de courses, lock et usage incorrecte de la bibliothèque Pthread
+–tool=drd : idem et + (openmp, ...)
+NB : il faut que les accès mémoires soient corrects!
+Documentations
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Introduction	Pthread	Moniteur	Sémaphore	Divers
+Travail demandé
+•	ensiwiki	• Implanter le sujet présent sur ensiwiki
+•	Les pages de man	• Création et initialisation des variables de synchronisation et
+des threads
+Deux petits tutoriaux	• Faire correctement les synchronisations
+https ://computing.llnl.gov/tutorials/pthreads/	• Le programme doit fournir une trace d’exécution montrant le
+http ://www.lix.polytechnique.fr/ liberti/public/computing/	démarrage et la fin de chaque thread, les appels, les blocages
+parallel/threads/threads-tutorial/tutorial.html	et les réveils
