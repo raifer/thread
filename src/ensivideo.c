@@ -26,14 +26,14 @@ int main(int argc, char *argv[]) {
     	exit(EXIT_FAILURE);
     }
     atexit(SDL_Quit);
-    
+    /*
     // start the two stream readers
 pthread_t t_theoraStreamReader;
 if(pthread_create(&t_theoraStreamReader, NULL, theoraStreamReader, argv[1]) == -1) {
 	perror("pthread_create");
 	return EXIT_FAILURE;
 }
-
+*/
 pthread_t t_vorbisStreamReader;
 if(pthread_create(&t_vorbisStreamReader, NULL, vorbisStreamReader, argv[1]) == -1) {
 	perror("pthread_create");
@@ -41,13 +41,21 @@ if(pthread_create(&t_vorbisStreamReader, NULL, vorbisStreamReader, argv[1]) == -
 }
     
     // wait audio thread
-pthread_join (t_theoraStreamReader, NULL);
+printf("Wait audio thread\n");
+pthread_join(t_vorbisStreamReader, NULL);
+
     // 1 seconde de garde pour le son,
+printf("Sleep 1 pour le son\n");
     sleep(1);
 
     // tuer les deux threads videos si ils sont bloqués
+//    extern pthread_t t_draw;
+//    pthread_cancel(t_theoraStreamReader);
+//    pthread_cancel(t_draw);
 
     // attendre les 2 threads videos
+//    pthread_join (t_draw, NULL);
+//    pthread_join (t_theoraStreamReader, NULL);
 
     
     exit(EXIT_SUCCESS);    

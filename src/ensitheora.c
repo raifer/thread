@@ -20,6 +20,8 @@ SDL_Rect rect = {};
 struct streamstate *theorastrstate=NULL;
 
 void *draw2SDL(void *arg) {
+	printf("Thread draw2SDL start\n");
+	fflush(stdout);
     int serial = (int) (long long int) arg;
     struct streamstate *s= NULL;
     SDL_Texture* texture = NULL;
