@@ -10,9 +10,11 @@ bool fini;
 
 /* l'implantation des fonctions de synchro ici */
 void envoiTailleFenetre(th_ycbcr_buffer buffer) {
+	while (1) {}
 }
 
 void attendreTailleFenetre() {
+	while (1){}
 }
 
 void signalerFenetreEtTexturePrete() {
