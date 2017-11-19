@@ -1,3 +1,17 @@
 *~
 *.o
 build/video.ogg
+.project/*
+video.ogg
+build/CMakeCache.txt
+build/CMakeFiles
+build/cmake_install.cmake
+build/CPackConfig.cmake
+build/CPackSourceConfig.cmake
+build/CTestTestfile.cmake
+build/ensivideo
+build/Makefile
+.settings/org.eclipse.cdt.core.prefs
+.settings/org.eclipse.ptp.rdt.sync.core.prefs
+.project
+.ptp-sync/
