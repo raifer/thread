@@ -110,7 +110,7 @@ int getPacket(struct streamstate *s) {
 /* return 1, if the packet is fully handled 
    otherwise return 0;
  */
-
+pthread_t t_draw;
 int decodeAllHeaders(int respac, struct streamstate *s, enum streamtype type) {
     // if the packet is complete, decode it
     if (respac == 1 && (! s->headersRead) &&
@@ -141,10 +141,10 @@ int decodeAllHeaders(int respac, struct streamstate *s, enum streamtype type) {
 
 	    if (type == TYPE_THEORA) {
 		// lancement du thread gérant l'affichage (draw2SDL)
-	    	pthread_t t_draw;
-	    	res = pthread_create(&t_draw, NULL, draw2SDL, &s->serial);
-		assert(res == 0);		     
-	    }
+//	    	pthread_t t_draw;
+	    	res = pthread_create(&t_draw, NULL, draw2SDL, (void *)(long long int)s->serial);
+		assert(res == 0);
+	}
 	}
     }
     if (respac == 1 && (! s->headersRead)
