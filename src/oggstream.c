@@ -11,6 +11,7 @@ ogg_sync_state   oggtheorastate, oggvorbisstate; /* sync and verify incoming phy
 ogg_page         theorapage, vorbispage; /* one Ogg bitstream page. Vorbis packets are inside */
 
 void *theoraStreamReader(void *arg) {
+	printf("Thread Theora Stream Reader Start\n");
     char *filename = (char *) arg;
     
     FILE *vf = fopen(filename, "r");
@@ -87,7 +88,7 @@ void *vorbisStreamReader(void *arg) {
 	// vérifier si le fichier ne serait pas fini
 	if ( feof( vf ) ) {
 	    fini = true;
-	    printf("FIN de la lecture de VORBIS !");
+	    printf("FIN de la lecture de VORBIS !\n");
 	    break;
 	}
 

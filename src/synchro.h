@@ -13,7 +13,7 @@ extern bool fini;
 /* Fonctions de synchro à implanter */
 
 void envoiTailleFenetre(th_ycbcr_buffer buffer);
-void attendreTailleFenetre();
+void attendreTailleFenetre(int *width, int *height);
 
 void attendreFenetreTexture();
 void signalerFenetreEtTexturePrete();

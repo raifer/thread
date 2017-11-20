@@ -1,5 +1,6 @@
 #include <time.h>
 #include <assert.h>
+#include <pthread.h>
 #include "ensivorbis.h"
 #include "ensitheora.h"
 #include "stream_common.h"
@@ -43,9 +44,11 @@ void pageReader(FILE *vf, ogg_sync_state *pstate, ogg_page *ppage) {
     
 }
 
+    // trouver le stream associé à la page ou le construire
 struct streamstate *getStreamState(ogg_sync_state *pstate, ogg_page *ppage,
 				   enum streamtype type) {
-    // trouver le stream associé à la page ou le construire
+	// Déclaration du mutex pour la hashmap theorastrstate.
+	static pthread_mutex_t m_theora_hm = PTHREAD_MUTEX_INITIALIZER;
     int serial = ogg_page_serialno( ppage );
     int bos = ogg_page_bos( ppage );
 
@@ -64,20 +67,22 @@ struct streamstate *getStreamState(ogg_sync_state *pstate, ogg_page *ppage,
 	vorbis_comment_init( & s->vo_dec.comment);
 	assert(res == 0);
 
-	// proteger l'accès à la hashmap
-
-	if (type == TYPE_THEORA)
-	    HASH_ADD_INT( theorastrstate, serial, s );
+	if (type == TYPE_THEORA) {
+		assert( pthread_mutex_lock( &m_theora_hm) == 0);
+		HASH_ADD_INT( theorastrstate, serial, s );
+		assert( pthread_mutex_unlock( &m_theora_hm) == 0);
+	}
 	else
 	    HASH_ADD_INT( vorbisstrstate, serial, s );
 
     } else {
-	// proteger l'accès à la hashmap
-
-	if (type == TYPE_THEORA)
-	    HASH_FIND_INT( theorastrstate, & serial, s );
-	else	
-	    HASH_FIND_INT( vorbisstrstate, & serial, s );    
+    	if (type == TYPE_THEORA) {
+		// proteger l'accès à la hashmap
+    		assert( pthread_mutex_lock( &m_theora_hm) == 0);
+    		HASH_FIND_INT( theorastrstate, & serial, s );
+    		assert( pthread_mutex_unlock( &m_theora_hm) == 0);
+    	} else
+    		HASH_FIND_INT( vorbisstrstate, & serial, s );
 
 	assert(s != NULL);
     }
@@ -109,7 +114,7 @@ int getPacket(struct streamstate *s) {
 /* return 1, if the packet is fully handled 
    otherwise return 0;
  */
-
+pthread_t t_draw;
 int decodeAllHeaders(int respac, struct streamstate *s, enum streamtype type) {
     // if the packet is complete, decode it
     if (respac == 1 && (! s->headersRead) &&
@@ -140,10 +145,10 @@ int decodeAllHeaders(int respac, struct streamstate *s, enum streamtype type) {
 
 	    if (type == TYPE_THEORA) {
 		// lancement du thread gérant l'affichage (draw2SDL)
-	        // inserer votre code ici !!
-
-		assert(res == 0);		     
-	    }
+//	    	pthread_t t_draw;
+	    	res = pthread_create(&t_draw, NULL, draw2SDL, (void *)(long long int)s->serial);
+		assert(res == 0);
+	}
 	}
     }
     if (respac == 1 && (! s->headersRead)
