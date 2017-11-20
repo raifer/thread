@@ -7,7 +7,7 @@
 bool fini;
 
 struct MoniteurTaille {
-		pthread_t mutex = PTHREAD_MUTEX_INITIALIZER;
+		pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 		pthread_cond_t cond = PTHREAD_COND_INITIALIZER;
 		int width = -1;
 		int height = -1;
