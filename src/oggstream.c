@@ -71,6 +71,7 @@ void *theoraStreamReader(void *arg) {
 }
 
 void *vorbisStreamReader(void *arg) {
+	printf("Thread Vorbis Stream Reader Start\n");
     char *filename = (char *) arg;
     
     FILE *vf = fopen(filename, "r");

@@ -23,5 +23,5 @@ void finConsommerTexture();
 
 void debutDeposerTexture();
 void finDeposerTexture();
-
+void synchro_quit();
 #endif

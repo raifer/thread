@@ -104,3 +104,14 @@ void finDeposerTexture() {
 	moniteurTextures.nbTextures++;
 	assert( pthread_mutex_unlock( &moniteurTextures.mutex) == 0);
 }
+
+
+/******
+ * Libération des mutex
+ ***/
+
+void synchro_quit() {
+	pthread_mutex_destroy( &moniteurTaille.mutex);
+	pthread_mutex_destroy( &mTexture.mutex);
+	pthread_mutex_destroy( &moniteurTextures.mutex);
+}

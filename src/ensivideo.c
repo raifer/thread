@@ -3,7 +3,7 @@
 #include <pthread.h>
 #include <assert.h>
 #include <SDL2/SDL.h>
-
+#include "synchro.h"
 #include "stream_common.h"
 #include "oggstream.h"
 
@@ -60,6 +60,8 @@ printf("Sleep 1 pour le son\n");
     pthread_join (t_draw, NULL);
     pthread_join (t_theoraStreamReader, NULL);
 
+    // Libération des outils de synchro
+    synchro_quit();
 
     exit(EXIT_SUCCESS);
 }
