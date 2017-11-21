@@ -52,7 +52,7 @@ target_link_libraries(ensivideo pthread ${ALLSTRIP_PKG_LDFLAGS})
 # Téléchargement de la vidéo de test
 #
 add_custom_command(OUTPUT video.ogg
-  COMMAND ../get_video.sh
+  COMMAND bash ../get_video.sh
 )
 add_custom_target(video DEPENDS video.ogg)
 
