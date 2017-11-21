@@ -49,6 +49,23 @@ add_executable(ensivideo src/ensivideo.c src/ensitheora.c src/ensivorbis.c src/o
 target_link_libraries(ensivideo pthread ${ALLSTRIP_PKG_LDFLAGS})
 
 ##
+# Téléchargement de la vidéo de test
+#
+add_custom_command(OUTPUT video.ogg
+  COMMAND ../get_video.sh
+)
+add_custom_target(video DEPENDS video.ogg)
+
+##
+# play : Compile le programme, télécharge la video et la lance
+#
+add_custom_target(play 
+  #COMMAND ../get_video.sh
+  COMMAND ./ensivideo video.ogg
+  DEPENDS ensivideo video
+)
+
+##
 # Test utilisant Coccinelle
 ##
 add_test(CommonPthreadError perl ${CMAKE_SOURCE_DIR}/tests/pthcocci.pl)
@@ -56,8 +73,6 @@ add_test(CommonPthreadError perl ${CMAKE_SOURCE_DIR}/tests/pthcocci.pl)
 ##
 # Ajout d'une cible pour lancer les tests de manière verbeuse
 ##
-add_custom_target(check ctest -V)
-
 
 ##
 # Construction de l'archive
