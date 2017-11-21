@@ -7,6 +7,9 @@
 
 bool fini;
 
+/******
+ * Taille de la fenêtre
+ *****/
 struct MoniteurTaille {
 		pthread_mutex_t mutex ;
 		pthread_cond_t cond ;
@@ -15,24 +18,6 @@ struct MoniteurTaille {
 };
 struct MoniteurTaille moniteurTaille = {PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, -1, -1};
 
-struct Moniteur{
-		pthread_mutex_t mutex;
-		pthread_cond_t cond;
-};
-struct Moniteur mTexture = {PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER};
-
-struct MoniteurTextures{
-		pthread_mutex_t mutex;
-		pthread_cond_t waitFree;
-		pthread_cond_t waitTexture;
-		int nbTextures;
-};
-struct MoniteurTextures moniteurTextures = {PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, PTHREAD_COND_INITIALIZER, 0};
-/* les variables pour la synchro, ici */
-
-
-
-/* l'implantation des fonctions de synchro ici */
 void envoiTailleFenetre(th_ycbcr_buffer buffer) {
 	assert( pthread_mutex_lock( &moniteurTaille.mutex) == 0);
 	moniteurTaille.width = buffer->width;
@@ -51,6 +36,17 @@ void attendreTailleFenetre(int *width, int *height) {
 	assert( pthread_mutex_unlock( &moniteurTaille.mutex) == 0);
 }
 
+
+/*****
+ * Fenêtre et textures prêtes
+ *****/
+
+struct Moniteur{
+		pthread_mutex_t mutex;
+		pthread_cond_t cond;
+};
+struct Moniteur mTexture = {PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER};
+
 void signalerFenetreEtTexturePrete() {
 	assert( pthread_mutex_lock( &mTexture.mutex) == 0);
 	assert(pthread_cond_signal(&mTexture.cond)==0);
@@ -62,6 +58,18 @@ void attendreFenetreTexture() {
 	assert(pthread_cond_wait(&mTexture.cond, &mTexture.mutex)==0);
 	assert( pthread_mutex_unlock( &mTexture.mutex) == 0);
 }
+
+
+/*****
+ * Producteur consommateur de textures
+ ***/
+struct MoniteurTextures{
+		pthread_mutex_t mutex;
+		pthread_cond_t waitFree;
+		pthread_cond_t waitTexture;
+		int nbTextures;
+};
+struct MoniteurTextures moniteurTextures = {PTHREAD_MUTEX_INITIALIZER, PTHREAD_COND_INITIALIZER, PTHREAD_COND_INITIALIZER, 0};
 
 void debutConsommerTexture() {
 	assert( pthread_mutex_lock( &moniteurTextures.mutex) == 0);
@@ -79,7 +87,6 @@ void finConsommerTexture() {
 	moniteurTextures.nbTextures--;
 	assert( pthread_mutex_unlock( &moniteurTextures.mutex) == 0);
 }
-
 
 void debutDeposerTexture() {
 	assert( pthread_mutex_lock( &moniteurTextures.mutex) == 0);
