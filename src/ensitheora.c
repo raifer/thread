@@ -19,7 +19,6 @@ struct TextureDate texturedate[NBTEX] = {};
 SDL_Rect rect = {};
 
 struct streamstate *theorastrstate=NULL;
-extern pthread_mutex_t m_theora_hm ;
 
 void *draw2SDL(void *arg) {
 	printf("Thread draw2SDL start\n");

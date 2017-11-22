@@ -41,9 +41,7 @@ void pageReader(FILE *vf, ogg_sync_state *pstate, ogg_page *ppage) {
 
 	res = ogg_sync_pageout( pstate, ppage );
     }
-
 }
-static pthread_mutex_t m_theora_hm = PTHREAD_MUTEX_INITIALIZER;
 
     // trouver le stream associé à la page ou le construire
 struct streamstate *getStreamState(ogg_sync_state *pstate, ogg_page *ppage,

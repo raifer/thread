@@ -6,6 +6,9 @@
 
 extern bool fini;
 
+// Mutex qui protège la hashmap de theora, déclaré dans
+extern pthread_mutex_t m_theora_hm ;
+
 
 /* Les extern des variables pour la synchro ici */
 

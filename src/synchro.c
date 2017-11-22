@@ -5,8 +5,9 @@
 #include "ensitheora.h"
 
 bool fini;
-//static pthread_mutex_t m_theora_hm = PTHREAD_MUTEX_INITIALIZER;
-//(void *)m_theora_hm;
+// Mutex qui protège la hashmap de theora.
+pthread_mutex_t m_theora_hm = PTHREAD_MUTEX_INITIALIZER;
+
 /******
  * Taille de la fenêtre
  *****/
