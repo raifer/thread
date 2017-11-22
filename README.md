@@ -1,9 +1,21 @@
+# Execution du programme #
+
+Modification du CmakeList.txt pour la création d'un _make play_ qui télécharge automatiquement une vidéo, compile et exécute le programme.
+NB : si la vidéo est déja téléchargé ou le programme déja compilé, la commande ne réitère pas ce qui est déja fait.
+
+# Explication des structures utilisées #
+
+## 
+
+
+
+
 # Base for a multi-threaded video player #
 
 ## References ##
 
 The idea came from the excellent ffmepg + SDL tutorial
-http://dranger.com/ffmpeg/ 
+http://dranger.com/ffmpeg/
 
 This videoplayer does not use ffmpeg but libogg, libtheora and
 libvorbis. It uses also SDL2 for the rendering and playing sound.
@@ -39,7 +51,7 @@ hints of the subject.
 1. reading initialization packet in ogg file; init the sdl (video and audio)
 2. initializing the theora stream
 3. initializing the vorbis stream
-4. reading packets in ogg file (twice, each stream reading thread) 
+4. reading packets in ogg file (twice, each stream reading thread)
 5. decoding theora
 6. decoding vorbis
 7. displaying the video stream with the sdl

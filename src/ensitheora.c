@@ -1,6 +1,7 @@
 #include <stdbool.h>
 #include <assert.h>
 #include <SDL2/SDL.h>
+#include <pthread.h>
 #include "ensitheora.h"
 #include "synchro.h"
 #include "stream_common.h"
@@ -18,6 +19,7 @@ struct TextureDate texturedate[NBTEX] = {};
 SDL_Rect rect = {};
 
 struct streamstate *theorastrstate=NULL;
+extern pthread_mutex_t m_theora_hm ;
 
 void *draw2SDL(void *arg) {
 	printf("Thread draw2SDL start\n");
@@ -63,8 +65,10 @@ void *draw2SDL(void *arg) {
     signalerFenetreEtTexturePrete();
 
     /* Protéger l'accès à la hashmap */
-
-    HASH_FIND_INT( theorastrstate, &serial, s );
+		assert( pthread_mutex_lock( &m_theora_hm) == 0);
+		HASH_FIND_INT( theorastrstate, & serial, s );
+		assert( pthread_mutex_unlock( &m_theora_hm) == 0);
+    //HASH_FIND_INT( theorastrstate, &serial, s );
 
 
 

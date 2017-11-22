@@ -4,9 +4,9 @@
 #include "synchro.h"
 #include "ensitheora.h"
 
-
 bool fini;
-
+//static pthread_mutex_t m_theora_hm = PTHREAD_MUTEX_INITIALIZER;
+//(void *)m_theora_hm;
 /******
  * Taille de la fenêtre
  *****/
