@@ -14,21 +14,20 @@ make play
 
 Télécharge une vidéo de teste, compile le programme et lance la vidéo.
 
-# Explication des structures utilisées 
+# Explication des méthodes de synchronisations
 
-Création d'un fichier synchro.c dans lequel les fonctions ont été implémentées
-Pour ce faire, une structure MoniteurTaille dans lequel a été placée un mutex, une condition et les variables, gère la taille de la fenetre.
-Une seconde structure Moniteur s'occupe elle des textures.
-Enfin, une derniere structure MoniteurTextures est responsable du bon déroulé des fonctions liées à la consommatation.
-
+- Nous avons créé un Mutex globale "m_theora_hm" qui protège la hashmap de theora.
+- Pour la taille de la fenêtre, nous avons créé et instancié une structure de donnée qui contient le mutex, la condition et les data.
+- Pour synchroniser les deux thread lorsque la fenêtre et les textures sont prêtes nous avons utilisé tout simplement un moniteur. Une structure "Monitor" a été créer et instanciée. 
+- Pour la problématique de production et de consommation de textures, nous avons créée la structure "MoniteurTextures" qui permet de gérer cela à travers un tampon.
 
 # Valgrind
 ## Memcheck
 
 Le résultat de l'outil memcheck est fournis dans le fichier memcheck.txt.
 On voit beaucoup de perte de mémoire.
-Il semble que le programme appel les librairies de SDL pour créer des chose et on ne doit pas appeller les bonne méthode pour les ;ibérer.
-Nous n'avons pas chercher plus loins pour nous concentrer sur les thread.
+Il semble que le programme appel les librairies de SDL pour créer divers objets, et on ne doit pas appeler les bonne méthode pour les libérer.
+Nous n'avons pas chercher plus loin pour nous concentrer sur les threads.
 
 ## Helgrind
 
@@ -40,11 +39,10 @@ Le résultat de l'outil helgrind est visible dans le fichier helgrind.txt.
 * Nous avons laissé tombé cette option.
 * Sans cette option l'outil Helgrind fonctionne.
 
-* Il y a beaucoup d'erreurs race qui corespondent à des écritures dans des zones non protégées.;
-* sans l'option --read-info-var, il est très diffcile de voir si les erreur vienne de nos parties;
+* Il y a beaucoup d'erreurs race qui correspondent à des écritures dans des zones non protégées.;
+* sans l'option --read-info-var, il est très difficile de voir si les erreur vienne de nos parties;
 * Nous ne voyons pas d'erreurs de type : Misuses of the POSIX pthreads API;
 * ni d'erreurs du type : Inconsistent Lock Orderings  
-
 
 
 # Modification du CmakeList.txt 
