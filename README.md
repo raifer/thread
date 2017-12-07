@@ -14,6 +14,11 @@ make play
 Télécharge une vidéo de teste, compile le programme et lance la vidéo.
 
 # Explication des structures utilisées #
+Création d'un fichier synchro.c dans lequel les fonctions ont été implémentées
+Pour ce faire, une structure MoniteurTaille dans lequel a été placée un mutex, une condition et les variables, gère la taille de la fenetre.
+Une seconde structure Moniteur s'occupe elle des textures.
+Enfin, une derniere structure MoniteurTextures est responsable du bon déroulé des fonctions liées à la consommatation.
+
 
 # Valgrind
 ## Memcheck
