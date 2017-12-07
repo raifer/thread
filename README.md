@@ -1,19 +1,21 @@
 % Projet thred
 % Gautier et Mathieu
 % 20 novembre 2017
+
 # Compilation du programme
 
 cd build
 cmake ..
 make 
 
-# Execution du programme #
+# Execution du programme
 
 make play
 
 Télécharge une vidéo de teste, compile le programme et lance la vidéo.
 
-# Explication des structures utilisées #
+# Explication des structures utilisées 
+
 Création d'un fichier synchro.c dans lequel les fonctions ont été implémentées
 Pour ce faire, une structure MoniteurTaille dans lequel a été placée un mutex, une condition et les variables, gère la taille de la fenetre.
 Une seconde structure Moniteur s'occupe elle des textures.
